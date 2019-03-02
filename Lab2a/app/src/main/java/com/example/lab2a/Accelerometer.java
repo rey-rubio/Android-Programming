@@ -37,7 +37,7 @@ public class Accelerometer extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_accelerometer);
 
-        getSupportActionBar().setTitle("Accelerometer");
+        getSupportActionBar().setTitle("Accelerometer (m/s^2)");
 
         sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
         accelerometerSensor = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);

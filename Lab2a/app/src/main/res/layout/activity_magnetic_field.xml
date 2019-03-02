@@ -7,7 +7,7 @@
     tools:context=".Accelerometer">
 
     <TextView
-        android:id="@+id/textView_Z"
+        android:id="@+id/textView_magneticfield_Z"
         android:layout_width="271dp"
         android:layout_height="31dp"
         android:layout_marginStart="16dp"
@@ -19,10 +19,10 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toEndOf="@+id/textView5"
-        app:layout_constraintTop_toBottomOf="@+id/textView_Y" />
+        app:layout_constraintTop_toBottomOf="@+id/textView_magneticfield_Y" />
 
     <TextView
-        android:id="@+id/textView_Y"
+        android:id="@+id/textView_magneticfield_Y"
         android:layout_width="272dp"
         android:layout_height="26dp"
         android:layout_marginStart="16dp"
@@ -34,7 +34,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toEndOf="@+id/textView4"
-        app:layout_constraintTop_toBottomOf="@+id/textView_X" />
+        app:layout_constraintTop_toBottomOf="@+id/textView_magneticfield_X" />
 
     <TextView
         android:id="@+id/textView5"
@@ -73,7 +73,7 @@
         android:layout_marginLeft="16dp" />
 
     <TextView
-        android:id="@+id/textView_X"
+        android:id="@+id/textView_magneticfield_X"
         android:layout_width="270dp"
         android:layout_height="25dp"
         android:layout_marginStart="16dp"

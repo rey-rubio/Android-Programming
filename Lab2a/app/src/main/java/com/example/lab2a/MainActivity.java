@@ -1,6 +1,9 @@
 package com.example.lab2a;
 
+import android.content.Context;
 import android.content.Intent;
+import android.hardware.Sensor;
+import android.hardware.SensorManager;
 import android.net.Uri;
 import android.os.Environment;
 import android.provider.MediaStore;
@@ -8,23 +11,35 @@ import android.support.v4.content.FileProvider;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ListView;
 
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
+
+import static android.os.Environment.getExternalStoragePublicDirectory;
 
 public class MainActivity extends AppCompatActivity {
     private Button lightButton;
     private Button accelerometerButton;
     private Button proximityButton;
+    private Button temperatureButton;
+    private Button magneticfieldButton;
     private Button cameraButton;
     private Button videoButton;
 
     static final int REQUEST_TAKE_PHOTO = 1;
 
     static final int REQUEST_VIDEO_CAPTURE = 1;
+
+    SensorManager smm;
+    List<Sensor> sensor;
+    ListView lv;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -32,12 +47,14 @@ public class MainActivity extends AppCompatActivity {
 
         getSupportActionBar().setTitle("Lab2 Main Menu");
 
+
         lightButton = findViewById(R.id.lightButton);
         accelerometerButton = findViewById(R.id.accelerometerButton);
         proximityButton = findViewById(R.id.proximityButton);
+        temperatureButton = findViewById(R.id.temperatureButton);
+        magneticfieldButton = findViewById(R.id.magneticfieldButton);
         cameraButton = findViewById(R.id.cameraButton);
         videoButton = findViewById(R.id.videoButton);
-
         lightButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -61,6 +78,21 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        temperatureButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getApplicationContext(), Temperature.class);
+                startActivity(intent);
+            }
+        });
+
+        magneticfieldButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getApplicationContext(), MagneticField.class);
+                startActivity(intent);
+            }
+        });
 
         cameraButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -87,6 +119,15 @@ public class MainActivity extends AppCompatActivity {
 
         });
 
+
+
+
+
+
+        smm = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
+        lv = (ListView) findViewById (R.id.listView_sensors);
+        sensor = smm.getSensorList(Sensor.TYPE_ALL);
+        lv.setAdapter(new ArrayAdapter<Sensor>(this, android.R.layout.simple_list_item_1,  sensor));
 
 //                Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
 //                // Ensure that there's a camera activity to handle the intent
@@ -116,7 +157,7 @@ public class MainActivity extends AppCompatActivity {
         // Create an image file name
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
         String imageFileName = "JPEG_" + timeStamp + "_";
-        File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+        File storageDir = getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
         File image = File.createTempFile(
                 imageFileName,  /* prefix */
                 ".jpg",         /* suffix */

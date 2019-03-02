@@ -7,19 +7,27 @@
     tools:context="com.example.lab2a.Camera">
 
 
-
     <VideoView
         android:id="@+id/vidView"
-        android:layout_above="@+id/btn_takeVideo"
-        android:layout_alignParentTop="true"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
+        android:layout_above="@+id/btn_takeVideo"
+        android:layout_alignParentStart="true"
         android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
-        android:layout_alignParentBottom="true"/>
+        android:layout_alignParentBottom="true"
+        android:layout_marginStart="0dp"
+        android:layout_marginLeft="0dp"
+        android:layout_marginTop="0dp"
+        android:layout_marginEnd="0dp"
+        android:layout_marginRight="0dp"
+        android:layout_marginBottom="0dp" />
 
     <Button
         android:id="@+id/btn_takeVideo"
+        android:background="@color/Tomato"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
@@ -27,19 +35,32 @@
         android:layout_marginStart="43dp"
         android:layout_marginTop="16dp"
         android:layout_marginBottom="14dp"
-        android:text="Take a Video" />
+        android:text="Take a Video"
+        android:layout_marginLeft="43dp"
+        android:layout_alignParentLeft="true" />
 
     <Button
         android:id="@+id/btn_gallery2"
+        android:background="@color/Tomato"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
         android:layout_alignParentBottom="true"
-        android:layout_marginStart="70dp"
-        android:layout_marginEnd="78dp"
-        android:layout_marginBottom="14dp"
+        android:layout_marginStart="61dp"
+        android:layout_marginLeft="61dp"
+        android:layout_marginEnd="104dp"
+        android:layout_marginRight="104dp"
+        android:layout_marginBottom="18dp"
         android:layout_toEndOf="@+id/btn_takeVideo"
-        android:onClick="pickVideo"
+        android:layout_toRightOf="@+id/btn_takeVideo"
         android:text="Gallery" />
+
+    <!--android:layout_alignParentEnd="true"-->
+        <!--android:layout_alignParentBottom="true"-->
+        <!--android:layout_marginStart="70dp"-->
+        <!--android:layout_marginEnd="78dp"-->
+        <!--android:layout_marginBottom="14dp"-->
+        <!--android:layout_toEndOf="@+id/btn_takeVideo"-->
 
 </RelativeLayout>

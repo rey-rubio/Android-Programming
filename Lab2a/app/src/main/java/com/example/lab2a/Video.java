@@ -3,12 +3,14 @@ package com.example.lab2a;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.media.MediaPlayer;
 import android.net.Uri;
 import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
 import android.widget.VideoView;
 
 import java.io.FileNotFoundException;
@@ -30,7 +32,12 @@ public class Video extends AppCompatActivity {
         getSupportActionBar().setTitle("Video");
 
         vidView = findViewById(R.id.vidView);
-
+        vidView.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+            @Override
+            public void onPrepared(MediaPlayer mp) {
+                mp.setLooping(true);
+            }
+        });
         takeVidButton = findViewById(R.id.btn_takeVideo);
         takeVidButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -62,8 +69,8 @@ public class Video extends AppCompatActivity {
     // Trigger gallery selection for a photo
     public void pickVideo(View view) {
 
-        System.out.println("pickPhoto: PICKING VIDEO");
-        // Create intent for picking a photo from the gallery
+        System.out.println("pickVideo: PICKING VIDEO");
+        // Create intent for picking a video from the gallery
         Intent intent = new Intent(Intent.ACTION_PICK,
                 MediaStore.Video.Media.INTERNAL_CONTENT_URI);
 
@@ -78,18 +85,23 @@ public class Video extends AppCompatActivity {
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        System.out.println("onActivityResult: PICKING VIDEO");
-        if (data != null) {
 
-            System.out.println("onActivityResult: SETTING VIDEO");
-            Uri vidUri = data.getData();
-            vidView.setVideoURI(vidUri);
 
-            vidView.setVisibility(View.VISIBLE);
-            vidView.setFocusable(true);
-            vidView.setZOrderOnTop(true);
-            vidView.start();
+        if (requestCode == PICK_VIDEO_CODE) {
+            System.out.println("onActivityResult: PICKING VIDEO");
+
+            if (data != null) {
+
+                System.out.println("onActivityResult: SETTING VIDEO");
+                Uri vidUri = data.getData();
+                vidView.setVideoURI(vidUri);
+
+                //            vidView.setVisibility(View.VISIBLE);
+                //            vidView.setFocusable(true);
+                //            vidView.setZOrderOnTop(true);
+                vidView.start();
+                vidView.canPause();
+            }
         }
-
     }
 }

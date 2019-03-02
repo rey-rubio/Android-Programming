@@ -27,6 +27,7 @@ import android.os.HandlerThread;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.FileProvider;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.util.Size;
@@ -45,13 +46,16 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.ByteBuffer;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 public class Camera extends AppCompatActivity {
-    private static final String TAG = "AndroidCameraApi";
+//    private static final String TAG = "AndroidCameraApi";
     private Button takePictureButton;
     private Button galleryButton;
+    private ImageView imageView;
     private TextureView textureView;
     private static final SparseIntArray ORIENTATIONS = new SparseIntArray();
     static {
@@ -73,7 +77,7 @@ public class Camera extends AppCompatActivity {
     private Handler mBackgroundHandler;
     private HandlerThread mBackgroundThread;
 
-
+    static final int REQUEST_IMAGE_CAPTURE = 1;
     // PICK_PHOTO_CODE is a constant integer
     public final static int PICK_PHOTO_CODE = 1046;
 
@@ -87,13 +91,16 @@ public class Camera extends AppCompatActivity {
         textureView = (TextureView) findViewById(R.id.texture);
         assert textureView != null;
         textureView.setSurfaceTextureListener(textureListener);
+        //mageView = (ImageView) findViewById(R.id.imageView_camera);
 
         takePictureButton = (Button) findViewById(R.id.btn_takepicture);
-        assert takePictureButton != null;
+        //assert takePictureButton != null;
         takePictureButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                takePicture();
+                    takePicture();
+
+
             }
         });
 
@@ -129,7 +136,7 @@ public class Camera extends AppCompatActivity {
         @Override
         public void onOpened(CameraDevice camera) {
             //This is called when the camera is open
-            Log.e(TAG, "onOpened");
+            //Log.e(TAG, "onOpened");
             cameraDevice = camera;
             createCameraPreview();
         }
@@ -165,10 +172,55 @@ public class Camera extends AppCompatActivity {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-    }
+   }
+
+
+//
+//    public void takePicture(View view){
+//        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE_SECURE);
+//        if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
+//
+//
+//            // Create the File where the photo should go
+//            File photoFile = null;
+//            try {
+//                photoFile = createImageFile();
+//            } catch (IOException ex) {
+//                // Error occurred while creating the File
+//            }
+//            // Continue only if the File was successfully created
+//            if (photoFile != null) {
+//                Uri photoURI = FileProvider.getUriForFile(this,
+//                        "com.example.android.fileprovider",
+//                        photoFile);
+//                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
+//                startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
+//                //           }
+//            }
+//        }
+//    }
+
+//    String currentPhotoPath;
+//
+//    private File createImageFile() throws IOException {
+//        // Create an image file name
+//        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+//        String imageFileName = "JPEG_" + timeStamp + "_";
+//        File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+//        File image = File.createTempFile(
+//                imageFileName,  /* prefix */
+//                ".jpg",         /* suffix */
+//                storageDir      /* directory */
+//        );
+//
+//        // Save a file: path for use with ACTION_VIEW intents
+//        currentPhotoPath = image.getAbsolutePath();
+//        return image;
+//    }
+
     protected void takePicture() {
         if(null == cameraDevice) {
-            Log.e(TAG, "cameraDevice is null");
+            //Log.e(TAG, "cameraDevice is null");
             return;
         }
         CameraManager manager = (CameraManager) getSystemService(Context.CAMERA_SERVICE);
@@ -216,6 +268,7 @@ public class Camera extends AppCompatActivity {
                         byte[] bytes = new byte[buffer.capacity()];
                         buffer.get(bytes);
                         save(bytes);
+
                     } catch (FileNotFoundException e) {
                         e.printStackTrace();
                     } catch (IOException e) {
@@ -246,7 +299,7 @@ public class Camera extends AppCompatActivity {
                 public void onCaptureCompleted(CameraCaptureSession session, CaptureRequest request, TotalCaptureResult result) {
                     super.onCaptureCompleted(session, request, result);
                     Toast.makeText(Camera.this, "Saved:" + file, Toast.LENGTH_SHORT).show();
-                    createCameraPreview();
+                    //createCameraPreview();
                 }
             };
             cameraDevice.createCaptureSession(outputSurfaces, new CameraCaptureSession.StateCallback() {
@@ -296,7 +349,7 @@ public class Camera extends AppCompatActivity {
     }
     private void openCamera() {
         CameraManager manager = (CameraManager) getSystemService(Context.CAMERA_SERVICE);
-        Log.e(TAG, "is camera open");
+        //Log.e(TAG, "is camera open");
         try {
             cameraId = manager.getCameraIdList()[0];
             CameraCharacteristics characteristics = manager.getCameraCharacteristics(cameraId);
@@ -312,11 +365,11 @@ public class Camera extends AppCompatActivity {
         } catch (CameraAccessException e) {
             e.printStackTrace();
         }
-        Log.e(TAG, "openCamera X");
+        //Log.e(TAG, "openCamera X");
     }
     protected void updatePreview() {
         if(null == cameraDevice) {
-            Log.e(TAG, "updatePreview error, return");
+            //Log.e(TAG, "updatePreview error, return");
         }
         captureRequestBuilder.set(CaptureRequest.CONTROL_MODE, CameraMetadata.CONTROL_MODE_AUTO);
         try {
@@ -348,7 +401,7 @@ public class Camera extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        Log.e(TAG, "onResume");
+        //Log.e(TAG, "onResume");
         startBackgroundThread();
         if (textureView.isAvailable()) {
             openCamera();
@@ -358,14 +411,69 @@ public class Camera extends AppCompatActivity {
     }
     @Override
     protected void onPause() {
-        Log.e(TAG, "onPause");
+        //Log.e(TAG, "onPause");
         //closeCamera();
         stopBackgroundThread();
         super.onPause();
     }
 
 
-
+//    // Trigger gallery selection for a photo
+//    public void pickPhoto(View view) {
+//
+//        System.out.println("pickPhoto: PICKING PHOTO");
+//        // Create intent for picking a photo from the gallery
+//        Intent intent = new Intent(Intent.ACTION_PICK,
+//                MediaStore.Images.Media.INTERNAL_CONTENT_URI);
+//
+//        // If you call startActivityForResult() using an intent that no app can handle, your app will crash.
+//        // So as long as the result is not null, it's safe to use the intent.
+//        if (intent.resolveActivity(getPackageManager()) != null) {
+//            // Bring up gallery to select a photo
+//            startActivityForResult(intent, PICK_PHOTO_CODE);
+//
+//
+//
+//        }
+//
+//    }
+//
+//    @Override
+//    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+//
+//        if (requestCode == REQUEST_IMAGE_CAPTURE) {
+//
+//            System.out.println("onActivityResult: REQUEST_IMAGE_CAPTURE");
+//            galleryAddPic();
+////            try {
+////                Bitmap bitmap = MediaStore.Images.Media.getBitmap(getApplicationContext().getContentResolver(), data.getData());
+//                imageView.setImageURI(data.getData());
+////            } catch (FileNotFoundException e) {
+////                e.printStackTrace();
+////            } catch (IOException e) {
+////                e.printStackTrace();
+////            }
+//        }
+//        else if(requestCode == PICK_PHOTO_CODE){
+//            if (data != null) {
+//
+//                System.out.println("onActivityResult: SETTING PHOTO");
+//                Uri photoUri = data.getData();
+//                imageView.setImageURI(photoUri);
+//            }
+//        }
+//
+//
+//    }
+//
+//    private void galleryAddPic() {
+//        Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
+//        File f = new File(currentPhotoPath);
+//        System.out.println(currentPhotoPath);
+//        Uri contentUri = Uri.fromFile(f);
+//        mediaScanIntent.setData(contentUri);
+//        this.sendBroadcast(mediaScanIntent);
+ //   }
     // Trigger gallery selection for a photo
     public void onPickPhoto(View view) {
         // Create intent for picking a photo from the gallery
@@ -378,6 +486,7 @@ public class Camera extends AppCompatActivity {
         // So as long as the result is not null, it's safe to use the intent.
         if (intent.resolveActivity(getPackageManager()) != null) {
             // Bring up gallery to select a photo
+
             startActivityForResult(intent, PICK_PHOTO_CODE);
         }
 
@@ -386,6 +495,8 @@ public class Camera extends AppCompatActivity {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (data != null) {
+
+            Toast.makeText(Camera.this, "Opening.... ", Toast.LENGTH_LONG).show();
             Uri photoUri = data.getData();
             // Do something with the photo based on Uri
             Bitmap selectedImage = null;

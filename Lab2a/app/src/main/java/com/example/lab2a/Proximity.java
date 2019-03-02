@@ -20,11 +20,14 @@ public class Proximity extends AppCompatActivity{
 
 
     private TextView textView_proximity;
-
+    private float timestamp;
     @Override
     public final void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_proximity);
+
+
+        getSupportActionBar().setTitle("Proximity");
 
         // Get an instance of the sensor service, and use that to get an instance of
         // a particular sensor.
@@ -32,20 +35,29 @@ public class Proximity extends AppCompatActivity{
         proximitySensor = sensorManager.getDefaultSensor(Sensor.TYPE_PROXIMITY);
         textView_proximity = findViewById(R.id.textView_proximity);
 
-        if (proximitySensor == null) {
-            Toast.makeText(this, "The device does not have a proximity sensor!", Toast.LENGTH_SHORT).show();
-            finish();
-        }
+//        if (proximitySensor == null) {
+//            Toast.makeText(this, "The device does not have a proximity sensor!", Toast.LENGTH_SHORT).show();
+//            finish();
+//        }
         proximityEventListener = new SensorEventListener() {
             @Override
             public void onSensorChanged(SensorEvent sensorEvent) {
-                float value = sensorEvent.values[0];
-                getSupportActionBar().setTitle("Proximity : " + value + " cm");
-                if (value == 0) {
-                    textView_proximity.setText("Near");
-                } else {
-                    textView_proximity.setText("Far");
+
+                if (timestamp != 0) {
+                    float value = sensorEvent.values[0];
+                    getSupportActionBar().setTitle("Proximity: " + value + " cm");
+                    if (value == 0) {
+                        textView_proximity.setText("Near");
+                    } else {
+                        textView_proximity.setText("Far");
+                    }
                 }
+                timestamp = sensorEvent.timestamp;
+
+
+
+
+
             }
 
             @Override
